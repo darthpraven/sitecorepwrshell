@@ -1,0 +1,14 @@
+$items = Get-Item -Path master: -Query "/sitecore/content//*[@@templatename ='SG-ProductDetailPage']"
+foreach($item in $items)
+{
+    $changePath = $item.Paths.FullPath
+    $changePath = "$changePath/Content/Buttons/Find A Store"
+    $temp = Get-Item -Path $changePath
+    if($temp)
+    {
+    $temp.Editing.BeginEdit()
+    $temp.Fields["Link"].Value = "<link text=""FIND A STORE"" linktype=""internal"" url=""/SKII/SKII-SG/home/find-a-store"" rel="""" querystring="""" target="""" id=""{9D9FC31F-1EFA-4402-89C6-5700C256FC58}"" />"
+    $temp.Editing.EndEdit()
+    write-host $temp.Paths.FullPath + $temp.Fields["Link"]
+    }
+}

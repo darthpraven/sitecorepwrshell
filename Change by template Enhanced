@@ -1,0 +1,51 @@
+# This Script is to Mass Edit Items in Content Tree filter using template Name.
+# The Items Edited this Script will be logged in EVENTLOG
+#Enter Template Name below in between single quotes ''
+######
+###### NOTE : IN THE ROOT PATH IF THERE ARE DASHES "-" FOR EG HERE "SKII-SG" WE ESCAPE THAT DASH BY WRAPPING THE WORD IN "#" LIKE "#SKII-SG#"
+######
+
+#### REQUIRED Values
+#Language of Items
+$language = "en-SG"
+#Root Path to Start Searching by Template
+$rootPath = "/sitecore/content/SKII/#SKII-SG#" 
+#Template to Filter
+$TemplateFilter = "SG-ProductDetailPage" 
+#Path of Item Under Filtered item to modify
+$ItemPathUnderTemplate = "/Content/Buttons/Find A Store" 
+#Field Name to Modify
+$fieldName = "Link" 
+#Value to Be Change in Field
+$ValueToBeChanged = "<link text=""FIND A STORE"" linktype=""internal"" url=""/SKII/SKII-SG/home/find-a-store"" rel="""" querystring="""" target="""" id=""{9D9FC31F-1EFA-4402-89C6-5700C256FC58}"" />"
+########
+$items = Get-Item -Path master: -Query "$rootPath//*[@@templatename ='$TemplateFilter']" -lang $language
+       
+foreach($item in $items)
+{
+    Write-host --------------------------------------------------------------------------------------
+    $ItemPath = $item.Paths.FullPath
+    $PathOfItemToBeChanged = $ItemPath + $ItemPathUnderTemplate
+    $ItemExist = Test-Path -Path $PathOfItemToBeChanged
+    if($ItemExist) {
+        $temp = Get-Item -Path $PathOfItemToBeChanged -lang $language
+        
+        if($temp)
+            {
+                $prevValue = $temp.Fields[$fieldName]
+                Write-host "Item that will be Modified " $temp.Paths.FullPath
+                Write-host "Previous Value : " $prevValue
+                
+                $temp.Editing.BeginEdit()
+                $temp.Fields[$fieldName].Value = $ValueToBeChanged
+                if($temp.Editing.EndEdit()){
+                    Write-host "New Value : " $ValueToBeChanged
+                } else {
+                    Write-host "Field Unmodified, Value : " $prevValue
+                }
+            }
+    }
+    else {
+        Write-host "Item does not Exist : " $PathOfItemToBeChanged
+    }
+}

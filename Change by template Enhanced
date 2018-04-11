@@ -7,9 +7,9 @@
 
 #### REQUIRED Values
 #Language of Items
-$language = "ja-JP"
+$language = "en-SG"
 #Root Path to Start Searching by Template
-$rootPath = "/sitecore/content/SKII/#SKII-JP#" 
+$rootPath = "/sitecore/content/SKII/#SKII-SG#" 
 #Template to Filter
 $TemplateFilter = "SG-ProductDetailPage" 
 #Path of Item Under Filtered item to modify

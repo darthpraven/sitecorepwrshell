@@ -7,9 +7,9 @@
 
 #### REQUIRED Values
 #Language of Items
-$language = "en-SG"
+$language = "ja-JP"
 #Root Path to Start Searching by Template
-$rootPath = "/sitecore/content/SKII/#SKII-SG#" 
+$rootPath = "/sitecore/content/SKII/#SKII-JP#" 
 #Template to Filter
 $TemplateFilter = "SG-ProductDetailPage" 
 #Path of Item Under Filtered item to modify
@@ -23,7 +23,8 @@ $items = Get-Item -Path master: -Query "$rootPath//*[@@templatename ='$TemplateF
        
 foreach($item in $items)
 {
-    Write-host --------------------------------------------------------------------------------------
+    Write-host "--------------------------------------------------------------------------------------"
+    Write-Log "--------------------------------------------------------------------------------------"
     $ItemPath = $item.Paths.FullPath
     $PathOfItemToBeChanged = $ItemPath + $ItemPathUnderTemplate
     $ItemExist = Test-Path -Path $PathOfItemToBeChanged
@@ -34,18 +35,23 @@ foreach($item in $items)
             {
                 $prevValue = $temp.Fields[$fieldName]
                 Write-host "Item that will be Modified " $temp.Paths.FullPath
+                Write-Log "Item that will be Modified " $temp.Paths.FullPath
                 Write-host "Previous Value : " $prevValue
+                Write-Log "Previous Value : " $prevValue
                 
                 $temp.Editing.BeginEdit()
                 $temp.Fields[$fieldName].Value = $ValueToBeChanged
                 if($temp.Editing.EndEdit()){
                     Write-host "New Value : " $ValueToBeChanged
+                    Write-Log "New Value : " $ValueToBeChanged
                 } else {
                     Write-host "Field Unmodified, Value : " $prevValue
+                    Write-Log "Field Unmodified, Value : " $prevValue
                 }
             }
     }
     else {
         Write-host "Item does not Exist : " $PathOfItemToBeChanged
+        Write-Log "Item does not Exist : " $PathOfItemToBeChanged
     }
 }
